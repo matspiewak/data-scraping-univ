@@ -19,23 +19,43 @@ name_box_Sklepklocki = soupSK.find_all('h3')
 price_box_Smyk = soupS.find_all('span', attrs={'class': "price--new price--new--red"})
 name_box_Smyk = soupS.find_all('div', attrs={'class': "complex-product__name"})
 
-class products():
-    def __init__(self, name, price):
-        self.name = name
-        self.price = price
-
 kzList = []
 sList = []
 skList = []
 
-for nameKZ,priceKZ,nameS,priceS,nameSK, priceSK in zip(
-            name_box_Krainazabawek,price_box_Krainazabawek, name_box_Smyk,
-            price_box_Smyk, name_box_Sklepklocki, price_box_Sklepklocki):
-                sList.append(products(nameS.text.strip(),priceS.text.strip()))
-                skList.append(products(nameSK.text.strip(), priceSK.text.strip()))
-                kzList.append(products(nameKZ.text.strip(), priceKZ.text.strip()))
+for priceKZ, priceS, priceSK in zip(price_box_Krainazabawek, price_box_Smyk, price_box_Sklepklocki):
+    sList.append(priceS.text.strip().replace('zł', '').replace(',', '.').replace(' ', ''))
+    skList.append(priceSK.text.strip().replace('zł', '').replace(',', '.').replace(' ', ''))
+    kzList.append(priceKZ.text.strip().replace('zł', '').replace(',', '.').replace(' ', ''))
+
+
+def converter(products_list):
+    for i in range(len(products_list)):
+        products_list[i] = float(products_list[i])
+    return products_list
+
+
+avgKZ = converter(kzList)
+avgS = converter(sList)
+avgSK = converter(skList)
+
 
 with open('scrappedData.csv', 'a') as file:
     writer = csv.writer(file)
-    for o1,o2,o3 in zip(sList,skList,kzList):
-        writer.writerow([o1.name,o1.price,o2.name,o2.price,o3.name,o3.price])
+    for o1, o2, o3 in zip(sList, skList, kzList):
+        writer.writerow([o1, o2, o3])
+
+
+def cal_avg(products_list):
+    avg = sum(products_list)/len(products_list)
+    return avg
+
+
+avgKZ = cal_avg(kzList)
+avgS = cal_avg(sList)
+avgSK = cal_avg(skList)
+
+with open('avgTechnicPrices.csv','a') as file:
+    writer = csv.writer(file)
+    writer.writerow([avgKZ, avgSK, avgS])
+
