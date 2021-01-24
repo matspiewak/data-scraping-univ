@@ -42,7 +42,8 @@ avgSK = converter(skList)
 
 with open('scrappedData.csv', 'a') as file:
     writer = csv.writer(file)
-    for o1, o2, o3 in zip(sList, skList, kzList):
+    writer.writerow(["Kraina Zabawek", "Sklep-Klocki", "Smyk"])
+    for o1, o2, o3 in zip(kzList, skList, sList):
         writer.writerow([o1, o2, o3])
 
 
@@ -57,5 +58,6 @@ avgSK = cal_avg(skList)
 
 with open('avgTechnicPrices.csv','a') as file:
     writer = csv.writer(file)
+    writer.writerow(["Kraina Zabawek", "Sklep-Klocki", "Smyk"])
     writer.writerow([avgKZ, avgSK, avgS])
 
